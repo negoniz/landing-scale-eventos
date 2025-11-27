@@ -1,15 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import { Menu, X, CheckCircle, Target, Users, TrendingUp, BarChart, Award, MessageCircle, Phone, Mail, Instagram, Linkedin, Facebook, ChevronDown, Calendar, MapPin, Music } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Menu, X, CheckCircle, Target, Users, TrendingUp, BarChart, Award, MessageCircle, Phone, Mail, Instagram, Linkedin, Facebook, ChevronDown, ChevronLeft, ChevronRight, Music } from "lucide-react"
 
 export default function ScaleEventosLanding() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [quizAnswers, setQuizAnswers] = useState({
-    question1: "",
-    question2: "",
-    question3: ""
-  })
+  const [currentSlide, setCurrentSlide] = useState(0)
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
@@ -19,63 +15,115 @@ export default function ScaleEventosLanding() {
     }
   }
 
-  const handleQuizSubmit = () => {
-    const message = `Olá! Acabei de responder o quiz no site da Scale Eventos:\n\n1. Tipo de evento: ${quizAnswers.question1}\n2. Público esperado: ${quizAnswers.question2}\n3. Principal desafio: ${quizAnswers.question3}\n\nGostaria de receber meus resultados e saber mais sobre o Método Scale!`
-    const whatsappUrl = `https://wa.me/5511999999999?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, "_blank")
-  }
-
-  // Eventos passados com flyers
-  const eventosPassados = [
+  // Flyers dos eventos - Imagens reais dos eventos musicais (SEM DUPLICATAS)
+  const flyers = [
     {
-      nome: "Festival de Verão 2024",
-      data: "15 de Janeiro, 2024",
-      local: "Parque Ibirapuera, SP",
-      tipo: "Festival",
-      publico: "5.000 pessoas",
-      cor: "from-orange-400 to-pink-600"
+      id: 1,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/762248f0-58bc-466e-a8a4-4b8ac6639899.png",
+      alt: "Marks Feed - Evento Musical",
+      titulo: "Marks Feed"
     },
     {
-      nome: "Tech Innovation Summit",
-      data: "22 de Março, 2024",
-      local: "Centro de Convenções, SP",
-      tipo: "Conferência",
-      publico: "800 pessoas",
-      cor: "from-blue-500 to-purple-600"
+      id: 2,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/6f95fc81-4e51-426b-9763-37f88c2030e9.jpg",
+      alt: "Funk on the Beach",
+      titulo: "Funk on the Beach"
     },
     {
-      nome: "Noite Corporativa Premium",
-      data: "10 de Abril, 2024",
-      local: "Hotel Unique, SP",
-      tipo: "Evento Corporativo",
-      publico: "300 pessoas",
-      cor: "from-gray-700 to-gray-900"
+      id: 3,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/c4aae648-e376-4b05-848a-8b2947487edd.jpg",
+      alt: "Maior das Gauchadas",
+      titulo: "Maior das Gauchadas"
     },
     {
-      nome: "Expo Negócios 2024",
-      data: "5 de Maio, 2024",
-      local: "Expo Center Norte, SP",
-      tipo: "Feira",
-      publico: "2.500 pessoas",
-      cor: "from-green-500 to-teal-600"
+      id: 4,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/367b6a59-2575-4a31-a8ad-9af495b89074.jpg",
+      alt: "Zé Felipe",
+      titulo: "Zé Felipe"
     },
     {
-      nome: "Gala Beneficente",
-      data: "18 de Junho, 2024",
-      local: "Sala São Paulo, SP",
-      tipo: "Gala",
-      publico: "400 pessoas",
-      cor: "from-purple-600 to-pink-600"
+      id: 5,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/79383430-60d2-40cd-adc6-1cc39062ebdb.png",
+      alt: "Petroski São Chico",
+      titulo: "Petroski São Chico"
     },
     {
-      nome: "Workshop Liderança 360°",
-      data: "30 de Julho, 2024",
-      local: "Espaço Colaborativo, SP",
-      tipo: "Workshop",
-      publico: "150 pessoas",
-      cor: "from-cyan-500 to-blue-600"
+      id: 6,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/9ac25aaf-83f0-400a-ad16-77875dd10de8.jpg",
+      alt: "Mega Tri Baile",
+      titulo: "Mega Tri Baile"
+    },
+    {
+      id: 7,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/c8d8b725-5a84-46af-b35f-4874db961d2c.jpg",
+      alt: "Koyote Luxuria",
+      titulo: "Koyote Luxuria"
+    },
+    {
+      id: 8,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/9ca7a975-fe0e-4480-89f8-4560e1a909ec.png",
+      alt: "Manu Batidão - Evento Musical",
+      titulo: "Manu Batidão"
+    },
+    {
+      id: 9,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/b8b0312b-5aef-42cd-ae62-5a6990b01c14.png",
+      alt: "Oktobertchê - Evento Musical",
+      titulo: "Oktobertchê"
+    },
+    {
+      id: 10,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/67548431-2449-46f4-8550-9ba2ab6e72f7.png",
+      alt: "Evento Musical",
+      titulo: "Edy Lemond"
     }
   ]
+
+  // Logos dos clientes
+  const clientLogos = [
+    {
+      id: 1,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/d3e78fae-eb4d-4de8-a85e-5e10a741a602.jpg",
+      alt: "Cliente 1"
+    },
+    {
+      id: 2,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/b882aa8d-b6c7-447f-99f0-73d18d9465fd.jpg",
+      alt: "Cliente 2"
+    },
+    {
+      id: 3,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/48e480f0-4584-4448-816f-a43c4e22810f.jpg",
+      alt: "Cliente 3"
+    },
+    {
+      id: 4,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/214d3d70-2095-4db9-b60b-d502b8d39bbc.jpg",
+      alt: "Cliente 4"
+    },
+    {
+      id: 5,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/40d63930-d42e-4602-83f1-9ee8837a4341.jpg",
+      alt: "Cliente 5"
+    },
+    {
+      id: 6,
+      image: "https://k6hrqrxuu8obbfwn.public.blob.vercel-storage.com/temp/55089f16-0ca4-4007-a105-192763b4755b.jpg",
+      alt: "Cliente 6"
+    }
+  ]
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % flyers.length)
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + flyers.length) % flyers.length)
+  }
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index)
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -158,31 +206,161 @@ export default function ScaleEventosLanding() {
               <span className="text-red-600">Método Scale</span>
             </h2>
             <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto">
-              Transforme seus eventos em experiências memoráveis e resultados mensuráveis com nossa metodologia comprovada
+              Seu evento não pode depender da sorte. Com tráfego estratégico, você alcança o público certo e vende muito mais.
             </p>
-            <button
-              onClick={() => scrollToSection("contato")}
-              className="bg-red-600 text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-bold hover:bg-red-700 hover:scale-105 transition-all duration-300 shadow-2xl hover:shadow-red-500/50 inline-flex items-center gap-2"
-            >
-              Solicite uma Consultoria Gratuita
-              <ChevronDown className="w-5 h-5" />
-            </button>
           </div>
         </div>
       </section>
 
-      {/* Prova Social - Logos de Clientes */}
-      <section className="py-12 sm:py-16 bg-white border-y">
+      {/* Portfólio - Carrossel de Flyers */}
+      <section id="portfolio" className="py-16 sm:py-24 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-gray-500 mb-8 text-sm sm:text-base font-medium">
-            EMPRESAS QUE CONFIAM NO MÉTODO SCALE
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 items-center justify-items-center opacity-60">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="w-32 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-gray-400 font-bold text-sm">Cliente {i}</span>
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Music className="w-10 h-10 text-red-500" />
+              <h3 className="text-3xl sm:text-4xl font-bold">
+                Eventos que Potencializamos com Estratégias de Marketing
+              </h3>
+            </div>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              São + de 1000 Eventos que escalaram resultados com nossas estratégias.
+            </p>
+          </div>
+
+          {/* Carrossel Desktop */}
+          <div className="hidden md:block max-w-6xl mx-auto">
+            <div className="relative">
+              {/* Imagem Principal */}
+              <div className="relative overflow-hidden rounded-3xl shadow-2xl">
+                <img
+                  src={flyers[currentSlide].image}
+                  alt={flyers[currentSlide].alt}
+                  className="w-full h-[600px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-8 left-8 right-8">
+                  <h4 className="text-3xl font-bold text-white mb-2">
+                    {flyers[currentSlide].titulo}
+                  </h4>
+                  <p className="text-gray-200 text-lg">Marketing feito pela Scale Eventos</p>
+                </div>
               </div>
-            ))}
+
+              {/* Botões de Navegação */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white p-4 rounded-full transition-all duration-300 hover:scale-110"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white p-4 rounded-full transition-all duration-300 hover:scale-110"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+
+              {/* Indicadores */}
+              <div className="flex justify-center gap-3 mt-8">
+                {flyers.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`transition-all duration-300 rounded-full ${
+                      index === currentSlide
+                        ? "w-12 h-3 bg-red-500"
+                        : "w-3 h-3 bg-white/30 hover:bg-white/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Miniaturas */}
+            <div className="grid grid-cols-4 gap-4 mt-8">
+              {flyers.slice(0, 4).map((flyer, index) => (
+                <button
+                  key={flyer.id}
+                  onClick={() => goToSlide(index)}
+                  className={`relative overflow-hidden rounded-xl transition-all duration-300 ${
+                    index === currentSlide
+                      ? "ring-4 ring-red-500 scale-105"
+                      : "opacity-60 hover:opacity-100"
+                  }`}
+                >
+                  <img
+                    src={flyer.image}
+                    alt={flyer.alt}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <p className="absolute bottom-3 left-3 right-3 text-white font-bold text-sm">
+                    {flyer.titulo}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Carrossel Mobile */}
+          <div className="md:hidden">
+            <div className="relative">
+              {/* Imagem Principal */}
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+                <img
+                  src={flyers[currentSlide].image}
+                  alt={flyers[currentSlide].alt}
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute bottom-6 left-4 right-4">
+                  <h4 className="text-2xl font-bold text-white mb-2">
+                    {flyers[currentSlide].titulo}
+                  </h4>
+                  <p className="text-gray-200">Marketing feito pela Scale Eventos</p>
+                </div>
+              </div>
+
+              {/* Botões de Navegação Mobile */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white p-3 rounded-full transition-all duration-300"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white p-3 rounded-full transition-all duration-300"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
+              {/* Indicadores Mobile */}
+              <div className="flex justify-center gap-2 mt-6">
+                {flyers.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`transition-all duration-300 rounded-full ${
+                      index === currentSlide
+                        ? "w-8 h-2 bg-red-500"
+                        : "w-2 h-2 bg-white/30"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="text-center mt-12">
+            <button
+              onClick={() => scrollToSection("contato")}
+              className="bg-red-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-red-700 hover:scale-105 transition-all duration-300 shadow-2xl inline-flex items-center gap-2"
+            >
+              Quero marketing pro meu evento
+              <ChevronDown className="w-5 h-5" />
+            </button>
           </div>
         </div>
       </section>
@@ -195,13 +373,91 @@ export default function ScaleEventosLanding() {
               Sobre a Scale Eventos
             </h3>
             <p className="text-lg text-gray-600 mb-6">
-              Somos especialistas em transformar eventos corporativos em experiências inesquecíveis que geram resultados reais para o seu negócio.
+              Somos especialistas em impulsionar eventos através de estratégias avançadas de tráfego pago que transformam interesse em público real e resultados mensuráveis.
             </p>
             <p className="text-lg text-gray-600">
-              Com mais de 10 anos de experiência e centenas de eventos realizados, desenvolvemos o Método Scale: uma abordagem estratégica que combina planejamento, execução impecável e mensuração de resultados.
+              Com anos de experiência no mercado e campanhas rodadas para os mais diversos formatos de eventos, desenvolvemos o Método Scale: uma abordagem estratégica que une segmentação inteligente, anúncios de alta performance e análise profunda de dados para atrair o público certo, no momento certo — garantindo máxima eficiência e potencial de lotação.
             </p>
           </div>
         </div>
+      </section>
+
+      {/* Clientes que Confiam na Gente */}
+      <section className="py-12 sm:py-16 bg-white border-y overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              Clientes que Confiam na Gente
+            </h3>
+            <p className="text-gray-600">
+              Marcas que escolheram a Scale Eventos para seus projetos
+            </p>
+          </div>
+
+          {/* Carrossel Infinito Rápido */}
+          <div className="relative">
+            <div className="flex animate-scroll-fast">
+              {/* Primeira sequência */}
+              {clientLogos.map((logo) => (
+                <div
+                  key={`first-${logo.id}`}
+                  className="flex-shrink-0 w-48 h-32 mx-6 flex items-center justify-center bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+                >
+                  <img
+                    src={logo.image}
+                    alt={logo.alt}
+                    className="max-w-full max-h-full object-contain p-4"
+                  />
+                </div>
+              ))}
+              {/* Segunda sequência (duplicada para loop infinito) */}
+              {clientLogos.map((logo) => (
+                <div
+                  key={`second-${logo.id}`}
+                  className="flex-shrink-0 w-48 h-32 mx-6 flex items-center justify-center bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+                >
+                  <img
+                    src={logo.image}
+                    alt={logo.alt}
+                    className="max-w-full max-h-full object-contain p-4"
+                  />
+                </div>
+              ))}
+              {/* Terceira sequência (para garantir loop suave) */}
+              {clientLogos.map((logo) => (
+                <div
+                  key={`third-${logo.id}`}
+                  className="flex-shrink-0 w-48 h-32 mx-6 flex items-center justify-center bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+                >
+                  <img
+                    src={logo.image}
+                    alt={logo.alt}
+                    className="max-w-full max-h-full object-contain p-4"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes scroll-fast {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-33.333%);
+            }
+          }
+
+          .animate-scroll-fast {
+            animation: scroll-fast 15s linear infinite;
+          }
+
+          .animate-scroll-fast:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
       </section>
 
       {/* O Que É o Método Scale */}
@@ -347,178 +603,8 @@ export default function ScaleEventosLanding() {
         </div>
       </section>
 
-      {/* Mini Quiz */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-                Descubra Como o Método Scale Pode Ajudar Você
-              </h3>
-              <p className="text-lg text-gray-600">
-                Responda 3 perguntas rápidas e receba uma análise personalizada no WhatsApp
-              </p>
-            </div>
-
-            <div className="bg-red-50 p-6 sm:p-10 rounded-2xl space-y-6">
-              {/* Pergunta 1 */}
-              <div>
-                <label className="block text-lg font-bold text-gray-900 mb-3">
-                  1. Que tipo de evento você está planejando?
-                </label>
-                <select
-                  value={quizAnswers.question1}
-                  onChange={(e) => setQuizAnswers({ ...quizAnswers, question1: e.target.value })}
-                  className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-red-600 focus:outline-none text-gray-900"
-                >
-                  <option value="">Selecione uma opção</option>
-                  <option value="Conferência/Congresso">Conferência/Congresso</option>
-                  <option value="Lançamento de Produto">Lançamento de Produto</option>
-                  <option value="Treinamento Corporativo">Treinamento Corporativo</option>
-                  <option value="Feira/Exposição">Feira/Exposição</option>
-                  <option value="Evento de Networking">Evento de Networking</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-
-              {/* Pergunta 2 */}
-              <div>
-                <label className="block text-lg font-bold text-gray-900 mb-3">
-                  2. Qual o público esperado?
-                </label>
-                <select
-                  value={quizAnswers.question2}
-                  onChange={(e) => setQuizAnswers({ ...quizAnswers, question2: e.target.value })}
-                  className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-red-600 focus:outline-none text-gray-900"
-                >
-                  <option value="">Selecione uma opção</option>
-                  <option value="Até 50 pessoas">Até 50 pessoas</option>
-                  <option value="50-100 pessoas">50-100 pessoas</option>
-                  <option value="100-300 pessoas">100-300 pessoas</option>
-                  <option value="300-500 pessoas">300-500 pessoas</option>
-                  <option value="Mais de 500 pessoas">Mais de 500 pessoas</option>
-                </select>
-              </div>
-
-              {/* Pergunta 3 */}
-              <div>
-                <label className="block text-lg font-bold text-gray-900 mb-3">
-                  3. Qual seu principal desafio?
-                </label>
-                <select
-                  value={quizAnswers.question3}
-                  onChange={(e) => setQuizAnswers({ ...quizAnswers, question3: e.target.value })}
-                  className="w-full p-4 rounded-lg border-2 border-gray-300 focus:border-red-600 focus:outline-none text-gray-900"
-                >
-                  <option value="">Selecione uma opção</option>
-                  <option value="Engajamento do público">Engajamento do público</option>
-                  <option value="Gestão de fornecedores">Gestão de fornecedores</option>
-                  <option value="Mensuração de resultados">Mensuração de resultados</option>
-                  <option value="Orçamento limitado">Orçamento limitado</option>
-                  <option value="Logística complexa">Logística complexa</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-
-              <button
-                onClick={handleQuizSubmit}
-                disabled={!quizAnswers.question1 || !quizAnswers.question2 || !quizAnswers.question3}
-                className="w-full bg-red-600 text-white px-8 py-4 rounded-lg text-lg font-bold hover:bg-red-700 hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Enviar e Receber Resultados no WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Portfólio - Eventos Passados */}
-      <section id="portfolio" className="py-16 sm:py-24 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <h3 className="text-3xl sm:text-4xl font-bold mb-4">
-              Confira Alguns Eventos Que Já Trabalhamos
-            </h3>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Mais de 500 eventos realizados com excelência. Veja alguns dos nossos trabalhos mais recentes.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
-            {eventosPassados.map((evento, index) => (
-              <div 
-                key={index}
-                className="group relative overflow-hidden rounded-2xl shadow-2xl hover:shadow-red-500/20 transition-all duration-500 hover:scale-105"
-              >
-                {/* Flyer simulado com gradiente */}
-                <div className={`h-96 bg-gradient-to-br ${evento.cor} p-8 flex flex-col justify-between relative overflow-hidden`}>
-                  {/* Padrão de fundo decorativo */}
-                  <div className="absolute inset-0 opacity-10">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-32 translate-x-32"></div>
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-24 -translate-x-24"></div>
-                  </div>
-
-                  {/* Conteúdo do flyer */}
-                  <div className="relative z-10">
-                    <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold mb-4">
-                      {evento.tipo}
-                    </div>
-                    <h4 className="text-3xl font-bold mb-2 leading-tight">
-                      {evento.nome}
-                    </h4>
-                  </div>
-
-                  <div className="relative z-10 space-y-3">
-                    <div className="flex items-center gap-3 text-white/90">
-                      <Calendar className="w-5 h-5" />
-                      <span className="font-medium">{evento.data}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-white/90">
-                      <MapPin className="w-5 h-5" />
-                      <span className="font-medium">{evento.local}</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-white/90">
-                      <Users className="w-5 h-5" />
-                      <span className="font-medium">{evento.publico}</span>
-                    </div>
-                  </div>
-
-                  {/* Badge "Realizado" */}
-                  <div className="absolute top-4 right-4 bg-white text-gray-900 px-4 py-2 rounded-full text-xs font-bold shadow-lg z-10">
-                    ✓ REALIZADO
-                  </div>
-                </div>
-
-                {/* Overlay com informação adicional no hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <div className="text-white">
-                    <p className="text-sm font-medium mb-2">Evento produzido pela Scale Eventos</p>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-red-500" />
-                      <span className="text-xs">Método Scale aplicado com sucesso</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA para ver mais */}
-          <div className="text-center mt-12">
-            <button
-              onClick={() => scrollToSection("contato")}
-              className="bg-red-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-red-700 hover:scale-105 transition-all duration-300 shadow-2xl inline-flex items-center gap-2"
-            >
-              Quero Criar Meu Evento
-              <ChevronDown className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* Cases de Sucesso */}
-      <section id="cases" className="py-16 sm:py-24 bg-gray-50">
+      <section id="cases" className="py-16 sm:py-24 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16">
             <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
@@ -614,26 +700,6 @@ export default function ScaleEventosLanding() {
         </div>
       </section>
 
-      {/* Garantia de Satisfação */}
-      <section className="py-16 sm:py-24 bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto bg-gradient-to-br from-red-50 to-red-100 p-8 sm:p-12 rounded-3xl text-center">
-            <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Award className="w-10 h-10 text-white" />
-            </div>
-            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Garantia de Satisfação 100%
-            </h3>
-            <p className="text-lg text-gray-700 mb-6">
-              Estamos tão confiantes no Método Scale que oferecemos garantia total de satisfação. Se você não ficar completamente satisfeito com os resultados, devolvemos seu investimento.
-            </p>
-            <p className="text-base text-gray-600 italic">
-              Sem letras miúdas. Sem complicações. Apenas resultados garantidos.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Final */}
       <section id="contato" className="py-16 sm:py-24 bg-gradient-to-br from-red-600 to-red-700 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -646,20 +712,13 @@ export default function ScaleEventosLanding() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
-                href="https://wa.me/5511999999999?text=Olá! Gostaria de agendar uma consultoria gratuita sobre o Método Scale"
+                href="https://wa.me/message/AZWFIBYQ7E54C1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white text-red-600 px-8 sm:px-12 py-4 sm:py-5 rounded-full text-lg font-bold hover:bg-gray-100 hover:scale-105 transition-all duration-300 shadow-2xl inline-flex items-center gap-2"
               >
                 <MessageCircle className="w-5 h-5" />
                 Falar no WhatsApp
-              </a>
-              <a
-                href="mailto:contato@scaleeventos.com.br"
-                className="bg-transparent border-2 border-white text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-lg font-bold hover:bg-white hover:text-red-600 transition-all duration-300 inline-flex items-center gap-2"
-              >
-                <Mail className="w-5 h-5" />
-                Enviar E-mail
               </a>
             </div>
           </div>
@@ -686,11 +745,7 @@ export default function ScaleEventosLanding() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-red-600" />
-                  <span className="text-gray-400">(11) 99999-9999</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-red-600" />
-                  <span className="text-gray-400">contato@scaleeventos.com.br</span>
+                  <span className="text-gray-400">(47) 99182-2350</span>
                 </div>
               </div>
             </div>
